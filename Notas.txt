@@ -1,0 +1,7 @@
+ python -m venv Enviroment
+
+cd .\Fast API\Enviroment
+
+.\Scripts\activate
+
+uvicorn Main:app --reload
