@@ -1,7 +1,11 @@
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, ValidationError, field_validator, Field
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from typing import Optional, Annotated, Any
+from typing import Any
+from fastapi.templating import Jinja2Templates
 
+templates = Jinja2Templates(directoy="templates")
 
 
 class User(BaseModel):
@@ -56,6 +60,17 @@ app = FastAPI()
 async def create_item(item : Item):
     return item
 
+
+@app.post("/items/{id}",response_class=HTMLResponse)
+async def read_item(request:Request, id: str ):
+    return templates.TemplateResponse(
+        request=request, name="item.html", context={"id": id}
+    )
+
+@app.get("/form")
+def get_form(resqust: Request):
+    result = "Ingrese un número."
+    return templates.TemplateResponse("formItem.html", context={'request' : resqust, 'result': result })
 
 @app.post("/items/{item_id}")
 async def update_item(item_id : int, item: Item, user : User):
